@@ -26,7 +26,7 @@ global.subject = executor => {
   currentSuite.subject = executor;
 };
 
-Object.defineProperty(global.subject, 'value', {
+Object.defineProperty(global.subject, 'now', {
   get: () => {
     if (!hasSubject) {
       let candidateSuite = currentSuite;
