@@ -51,6 +51,25 @@ global.expect = value => {
       if (expected !== value) {
         throw new Error(`Expected ${expected}, got ${value}`);
       }
+    },
+    throw: expected => {
+      let error;
+
+      try {
+        value();
+      }
+
+      catch (e) {
+        error = e;
+      }
+
+      if (!error) {
+        throw new Error(`Expected an error to be thrown by ${value.toString()}`);
+      }
+
+      if (!expected.test(error.message)) {
+        throw new Error(`Expected error message to match ${expected.toString()}, got \`${error.message}\``);
+      }
     }
   };
   expectations.to = expectations;
