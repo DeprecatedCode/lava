@@ -38,6 +38,17 @@ describe('lava (assignment)', () => {
     });
   });
 
+  context('set x, y, and z', () => {
+    subject(() => lava('x = 1 ; y = 2 ; z = 3'));
+
+    it('returns a state where x, y, and z all have values', () => {
+      const state = subject.now();
+      expect(state.get('x')).to.be(1);
+      expect(state.get('y')).to.be(2);
+      expect(state.get('z')).to.be(3);
+    });
+  });
+
   context('set and unset x', () => {
     subject(() => lava('x = 1 ; ! x'));
 
@@ -162,17 +173,6 @@ describe('lava (assignment)', () => {
     it('returns a state where withX is defined', () => {
       const state = subject.now();
       expect(state.defined('withX')).to.be(true);
-    });
-  });
-
-  context('multiple keys assignment', () => {
-    subject(() => lava('x = 1 ; y = 2 ; z = 3'));
-
-    it('returns a state where x, y, and z all have values', () => {
-      const state = subject.now();
-      expect(state.get('x')).to.be(1);
-      expect(state.get('y')).to.be(2);
-      expect(state.get('z')).to.be(3);
     });
   });
 });
