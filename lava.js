@@ -10,20 +10,8 @@ const evaluate = (state, line) =>
     line[0].valueOf : 999;
 
 const operators = {
+  '=': (state, A, B) => state.set(evaluateKey(state, A), evaluate(state, B)),
   '!': (state, A, B) => state.delete(evaluateKey(state, B)),
-  '>>>': (state, A, B) => {
-    if (A.length && B.length) {
-      throw new Error('TODO merge states');
-    }
-    else if (A.length) {
-      const blank = new State();
-      return blank.store(evaluateKey(state, A), state);
-    }
-    else if (B.length) {
-      const blank = new State();
-      return blank.set(evaluateKey(state, B), state);
-    }
-  },
   '>>': (state, A, B) => {
     if (A.length && B.length) {
       throw new Error('TODO merge states');
@@ -39,7 +27,19 @@ const operators = {
     }
   },
   '<<': (state, A, B) => state.get(evaluateKey(state, B)),
-  '=': (state, A, B) => state.set(evaluateKey(state, A), evaluate(state, B))
+  '>>>': (state, A, B) => {
+    if (A.length && B.length) {
+      throw new Error('TODO merge states');
+    }
+    else if (A.length) {
+      const blank = new State();
+      return blank.store(evaluateKey(state, A), state);
+    }
+    else if (B.length) {
+      const blank = new State();
+      return blank.set(evaluateKey(state, B), state);
+    }
+  }
 };
 
 module.exports = code => {

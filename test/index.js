@@ -77,23 +77,40 @@ global.expect = value => {
 };
 
 const executeSuite = (suite, depth = '') => {
-  console.log(depth + suite.description);
   currentSuite = suite;
+  let passingTests = 0;
+  let failingTests = 0;
+  let pendingOutput = [];
   suite.it.forEach((test) => {
     hasSubject = false;
     activeSubject = undefined;
     try {
       test.executor();
-      console.log(depth + '  ✔ ' + test.description);
+      passingTests++;
+      pendingOutput.push(`${depth}  ✔ ${test.description}`);
     }
     catch (error) {
-      console.log(depth + '  ✘ ' + test.description);
-      console.error(error);
+      failingTests++;
+      pendingOutput.push(`${depth}  ✘ ${test.description}`);
+      pendingOutput.push(error);
     }
   });
 
+  if (passingTests === 0 && failingTests === 0) {
+    console.log(`${depth}◼ ${suite.description}`);
+  }
+
+  else if (passingTests > 0 && failingTests === 0) {
+    console.log(`${depth}✔ ${suite.description}`);
+  }
+
+  else if (failingTests > 0) {
+    console.log(`${depth}✘ ${suite.description} - ${passingTests}/${passingTests + failingTests} passed`);
+    pendingOutput.forEach(output => console.log(output));
+  }
+
   suite.childSuites.forEach(suite =>
-    executeSuite(suite, depth + '  ')
+    executeSuite(suite, `${depth}  `)
   );
 }
 
