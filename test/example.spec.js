@@ -1,12 +1,17 @@
 const lava = require('../lava');
 
-describe('lava (assignment)', () => {
+describe('lava (example)', () => {
   context('create a person', () => {
     subject(() => lava('name = "Robert" ; age = 28 ; >>> person'));
 
     it('returns a state where name is not defined', () => {
       const state = subject.now();
       expect(state.defined('name')).to.be(false);
+    });
+
+    it('returns a state where age is not defined', () => {
+      const state = subject.now();
+      expect(state.defined('age')).to.be(false);
     });
 
     it('returns a state where person is defined', () => {
