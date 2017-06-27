@@ -104,3 +104,4 @@ setTimeout(() => {
 });
 
 require('./assignment.spec');
+require('./example.spec');

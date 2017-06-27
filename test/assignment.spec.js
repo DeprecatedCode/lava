@@ -4,14 +4,14 @@ describe('lava (assignment)', () => {
   context('set x to 1', () => {
     subject(() => lava('x = 1'));
 
-    it('returns a state where x is 1 and y is not defined', () => {
-      const state = subject.now();
-      expect(state.get('x')).to.be(1);
-    });
-
     it('returns a state where x is defined', () => {
       const state = subject.now();
       expect(state.defined('x')).to.be(true);
+    });
+
+    it('returns a state where x is 1', () => {
+      const state = subject.now();
+      expect(state.get('x')).to.be(1);
     });
 
     it('returns a state where y is not defined', () => {

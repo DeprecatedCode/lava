@@ -32,6 +32,14 @@ class Value extends Token {
   static testInteger(candidate) {
     return /^-?[0-9]+$/.test(candidate);
   }
+
+  static testDoubleQuotedString(candidate) {
+    return candidate[0] === '"' && '"' === candidate[candidate.length - 1];
+  }
+
+  static testSingleQuotedString(candidate) {
+    return candidate[0] === "'" && "'" === candidate[candidate.length - 1];
+  }
 }
 
 /**
@@ -55,6 +63,9 @@ class Parser {
     }
     else if (Value.testInteger(segment)) {
       current.push(new Value(parseInt(segment)));
+    }
+    else if (Value.testDoubleQuotedString(segment) || Value.testSingleQuotedString(segment)) {
+      current.push(new Value(segment.substr(1, segment.length - 2)));
     }
     else {
       current.push(new Identifier(segment));
