@@ -11,7 +11,33 @@ const evaluate = (state, line) =>
 
 const operators = {
   '!': (state, A, B) => state.delete(evaluateKey(state, B)),
-  '>>': (state, A, B) => state.set(evaluateKey(state, B), state),
+  '>>>': (state, A, B) => {
+    if (A.length && B.length) {
+      throw new Error('TODO merge states');
+    }
+    else if (A.length) {
+      const blank = new State();
+      return blank.store(evaluateKey(state, A), state);
+    }
+    else if (B.length) {
+      const blank = new State();
+      return blank.set(evaluateKey(state, B), state);
+    }
+  },
+  '>>': (state, A, B) => {
+    if (A.length && B.length) {
+      throw new Error('TODO merge states');
+    }
+    else if (A.length) {
+      return state.store(evaluateKey(state, A), state);
+    }
+    else if (B.length) {
+      return state.set(evaluateKey(state, B), state);
+    }
+    else {
+      throw new Error('Token >> used with no parameters');
+    }
+  },
   '<<': (state, A, B) => state.get(evaluateKey(state, B)),
   '=': (state, A, B) => state.set(evaluateKey(state, A), evaluate(state, B))
 };

@@ -20,6 +20,12 @@ class EmptyState {
     }
     return new KeyValueState(this, key, value);
   }
+
+  store(key, value) {
+    const circularStateReference = value.set(key);
+    circularStateReference.value = circularStateReference;
+    return this.set(key, circularStateReference);
+  }
 }
 
 /**

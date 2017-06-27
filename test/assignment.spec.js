@@ -62,7 +62,7 @@ describe('lava (assignment)', () => {
     });
   });
 
-  context('store and rewind state', () => {
+  context('store and rewind pristine state', () => {
     subject(() => lava('x = 1 ; >> initial ; x = 2 ; x = 3 ; << initial'));
 
     it('returns a state where the value of x has been restored to 1', () => {
@@ -70,9 +70,98 @@ describe('lava (assignment)', () => {
       expect(state.get('x')).to.be(1);
     });
 
-    it('returns a state where intial is not defined', () => {
+    it('returns a state where initial is not defined', () => {
       const state = subject.now();
       expect(state.defined('initial')).to.be(false);
+    });
+  });
+
+  context('store and rewind state repeatedly', () => {
+    subject(() => lava('x = 1 ; initial >> ; x = 2 ; << initial ; x = 3 ; << initial'));
+
+    it('returns a state where the value of x has been restored to 1', () => {
+      const state = subject.now();
+      expect(state.get('x')).to.be(1);
+    });
+
+    it('returns a state where initial is defined', () => {
+      const state = subject.now();
+      expect(state.defined('initial')).to.be(true);
+    });
+  });
+
+  context('capture and reset state to blank', () => {
+    subject(() => lava('x = 1 ; >>> withX'));
+
+    it('returns a state where x is not defined', () => {
+      const state = subject.now();
+      expect(state.defined('x')).to.be(false);
+    });
+  });
+
+  context('capture and reset state to blank for repeated use', () => {
+    subject(() => lava('x = 1 ; withX >>>'));
+
+    it('returns a state where x is not defined', () => {
+      const state = subject.now();
+      expect(state.defined('x')).to.be(false);
+    });
+  });
+
+  context('capture and reset state to blank, after restore', () => {
+    subject(() => lava('x = 1 ; >>> withX ; << withX'));
+
+    it('returns a state where x is defined', () => {
+      const state = subject.now();
+      expect(state.defined('x')).to.be(true);
+    });
+
+    it('returns a state where x is 1', () => {
+      const state = subject.now();
+      expect(state.get('x')).to.be(1);
+    });
+
+    it('returns a state where withX is not defined', () => {
+      const state = subject.now();
+      expect(state.defined('withX')).to.be(false);
+    });
+  });
+
+  context('capture and reset state to blank for repeated use, after restore', () => {
+    subject(() => lava('x = 1 ; withX >>> ; << withX'));
+
+    it('returns a state where x is defined', () => {
+      const state = subject.now();
+      expect(state.defined('x')).to.be(true);
+    });
+
+    it('returns a state where x is 1', () => {
+      const state = subject.now();
+      expect(state.get('x')).to.be(1);
+    });
+
+    it('returns a state where withX is defined', () => {
+      const state = subject.now();
+      expect(state.defined('withX')).to.be(true);
+    });
+  });
+
+  context('capture and reset state to blank and restore repeatedly', () => {
+    subject(() => lava('x = 1 ; withX >>> ; << withX ; << withX ; << withX'));
+
+    it('returns a state where x is defined', () => {
+      const state = subject.now();
+      expect(state.defined('x')).to.be(true);
+    });
+
+    it('returns a state where x is 1', () => {
+      const state = subject.now();
+      expect(state.get('x')).to.be(1);
+    });
+
+    it('returns a state where withX is defined', () => {
+      const state = subject.now();
+      expect(state.defined('withX')).to.be(true);
     });
   });
 
