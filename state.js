@@ -1,4 +1,9 @@
 /**
+ * Internal use
+ */
+const parentMap = new WeakMap();
+
+/**
  * The root of all states
  */
 class EmptyState {
@@ -11,6 +16,9 @@ class EmptyState {
   }
 
   get(key) {
+    if (key === 'global') {
+      return global;
+    }
     throw new Error(`"${key}" is not defined`);
   }
 
@@ -34,19 +42,19 @@ class EmptyState {
 class EmptyKeyState extends EmptyState {
   constructor(parent, key) {
     super();
-    this.parent = parent;
+    parentMap.set(this, parent);
     this.key = key;
   }
 
   defined(key) {
-    return key === this.key ? false : this.parent.defined(key);
+    return key === this.key ? false : parentMap.get(this).defined(key);
   }
 
   get(key) {
     if (key === this.key) {
       throw new Error(`"${key}" is not defined`);
     }
-    return this.parent.get(key);
+    return parentMap.get(this).get(key);
   }
 }
 
@@ -56,13 +64,13 @@ class EmptyKeyState extends EmptyState {
 class KeyValueState extends EmptyState {
   constructor(parent, key, value) {
     super();
-    this.parent = parent;
+    parentMap.set(this, parent);
     this.key = key;
     this.value = value;
   }
 
   defined(key) {
-    return key === this.key ? true : this.parent.defined(key);
+    return key === this.key ? true : parentMap.get(this).defined(key);
   }
 
   delete(key) {
@@ -70,7 +78,7 @@ class KeyValueState extends EmptyState {
   }
 
   get(key) {
-    return key === this.key ? this.value : this.parent.get(key);
+    return key === this.key ? this.value : parentMap.get(this).get(key);
   }
 }
 

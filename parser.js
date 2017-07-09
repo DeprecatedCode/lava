@@ -67,7 +67,7 @@ class Parser {
     else if (Value.testDoubleQuotedString(segment) || Value.testSingleQuotedString(segment)) {
       current.push(new Value(segment.substr(1, segment.length - 2)));
     }
-    else {
+    else if (segment.length > 0) {
       current.push(new Identifier(segment));
     }
     return current;

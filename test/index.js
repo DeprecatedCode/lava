@@ -122,3 +122,4 @@ setTimeout(() => {
 
 require('./assignment.spec');
 require('./example.spec');
+require('./global.spec');
